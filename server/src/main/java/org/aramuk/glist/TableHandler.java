@@ -45,10 +45,10 @@ import com.amazonaws.services.dynamodbv2.model.*;
  */
 public class TableHandler {
 
-    private static final String DEFAULT_TABLE_NAME = "items";
-    private static final String ATTR_DEVICE_ID = "device_id";
-    private static final String ATTR_PARENT_ID = "parent_item_id";
-    private static final String ATTR_ITEM_INFO = "item_info";
+    static final String DEFAULT_TABLE_NAME = "items";
+    static final String ATTR_DEVICE_ID = "device_id";
+    static final String ATTR_PARENT_ID = "parent_item_id";
+    static final String ATTR_ITEM_INFO = "item_info";
     static final String ATTR_ITEM_ID = "item_id";
     static final String ATTR_ITEM_VALUE = "value";
 
