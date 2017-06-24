@@ -56,7 +56,7 @@ public class TableHandler {
     private String tableName;
 
     public static void main(String[] args) {
-        if (args.length > 1) {
+        if (args.length > 0) {
             if (args[0].equalsIgnoreCase("init")) {
                 TableHandler handler = new TableHandler();
                 if (handler.checkTableExists()) {
