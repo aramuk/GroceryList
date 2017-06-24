@@ -1,0 +1,119 @@
+<html>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="js/materialize.min.js"></script>
+
+  <head>
+     <meta charset="utf-8">
+     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+     <!--Import Google Icon Font-->
+     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+     <!--Import materialize.css-->
+     <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+     <title>Main Activity</title>
+  </head>
+
+  <body class="yellow lighten-5">
+    <style>
+      /* label color */
+      .input-field label {
+        color: #ff5252;
+      }
+
+      /* label focus color */
+      .input-field input[type=text]:focus + label {
+          color: #ff5252;
+      }
+
+      /* label underline focus color */
+      .input-field input[type=text]:focus {
+          border-bottom: 2px solid #ff5252;
+          box-shadow: 0 1px 0 0 #ff5252;
+      }
+      /* valid color */
+      .input-field input[type=text].valid {
+          border-bottom: 2px solid #ff5252;
+          box-shadow: 0 1px 0 0 #ff5252;
+      }
+      .input-field .prefix.active {
+          color: #ff5252;
+      }
+    </style>
+
+    <div class="row red accent-2">
+      <div class="col s8 push-s1">
+        <h4 class="yellow-text text-lighten-5">Grocery List</h4>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class ="row">
+        <div class="input-field col s10">
+          <!--<i class="material-icons prefix">store</i>-->
+          <input id = "enter_store" class="input-field" type="text" class="validate">
+          <label fod="enter_task">Name of Store</label>
+        </div>
+        </br>
+        <div class="col s2">
+          <button id="add_store" class="waves-effect wave-light btn red accent-2" onclick="create_store()">Add</button>
+        </div>
+        <div class="col s12">
+          <ul id="store_list" onload="load_stores()">
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var counter = 1;
+
+      //loads existing stores from database
+      function load_stores(){
+        var html ="";
+
+      }
+
+      //verifies the inputted store, then adds it
+      function create_store(){
+        //add($('#enter_store').val());
+        var text = $('#enter_store').val();
+        if(!text.length==0){
+          $('#enter_store').val('');
+          $('#enter_store').trigger('blur');
+          add(text);
+        }
+        else{
+          Materialize.toast("Not a valid store",500);
+        }
+      }
+
+      //adds a store with the given name
+      function add(text){
+        $('#store_list').append('<li><span>'+ text +' </span>' +
+          '<button id="delete'+counter+'" class="btn-flat s1 right">Delete</button>' +
+          '<button id="edit' + counter +'" class="btn-flat s1 right">Edit</button>' +
+          '</br></br></li><div class="divider"></div></br>');
+
+        $('#edit' + counter).click(function(){
+          $(this).prev().prev().attr('contenteditable','true');
+          $(this).prev().prev().focus();
+          //SAVES CHANGES TO DATABASE HERE
+        });
+
+        $('#delete' + counter).click(function(){
+          for(var i=2;i>0;i--){
+            $(this).next().next().remove();
+            $(this).parent().next().remove();
+          }
+          $(this).parent().remove();
+        });
+        counter++;
+        //REMOVES FROM DATABASE HERE
+      };
+
+      /*$(function() {
+        $('#add_store').on('click',create_store);
+      });*/
+    </script>
+  </body>
+</html>

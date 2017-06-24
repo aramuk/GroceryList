@@ -1,0 +1,132 @@
+<html>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="js/materialize.min.js"></script>
+
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+      <!--Import Google Icon Font-->
+     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+     <!--Import materialize.css-->
+     <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+      <title>Edit Store Activity</title>
+  </head>
+
+  <body class="yellow lighten-5">
+    <div class="row red accent-2">
+      <div class="col s8 push-s1">
+        <h4 class="yellow-text text-lighten-5">Grocery List</h4>
+      </div>
+    </div>
+
+    <style>
+      /* label color */
+      .input-field label {
+        color: #ff5252;
+      }
+
+      /* label focus color */
+      .input-field input[type=text]:focus + label {
+          color: #ff5252;
+      }
+
+      /* label underline focus color */
+      .input-field input[type=text]:focus {
+          border-bottom: 2px solid #ff5252;
+          box-shadow: 0 1px 0 0 #ff5252;
+      }
+      /* valid color */
+      .input-field input[type=text].valid {
+          border-bottom: 2px solid #ff5252;
+          box-shadow: 0 1px 0 0 #ff5252;
+      }
+      .input-field .prefix.active {
+          color: #ff5252;
+      }
+    </style>
+
+    <div class ="row">
+      <div class="input-field col s9 align-right">
+        <!--<i class="material-icons prefix">store</i>-->
+        <input id = "enter_name" class="input-field" type="text" class="validate">
+        <label fod="enter_name">Name of Store</label>
+      </div>
+      <div class="col s3">
+        <a id="save_changes" class="waves-effect waves-light btn-large blue darken-1" onclick="save()"><i class="material-icons right">done</i>Save Changes</a>
+      </div>
+    </div>
+    <div class="container">
+      <div class ="row">
+        <div class="input-field col s5">
+          <input id = "enter_item" class="input-field" type="text" class="validate">
+          <label fod="enter_item">Item to Add</label>
+        </div>
+        <div class="input-field col s5">
+          <input id = "enter_frequency" class="input-field" type="text" class="validate"></input>
+          <label fod="enter_frequency">Frequency (per month)</label>
+        </div>
+        </br>
+        <div class="col s2">
+          <button id="add_item" class="waves-effect wave-light btn red accent-2" onclick="create_item()">Add</button>
+        </div>
+        <div class="col s12">
+          <ul id="item_list" onload="load_items()">
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var counter = 1;
+
+      //loads existing stores from database
+      function load_items(){
+        var html ="";
+        //LOAD HERE
+      }
+
+      //verifies the inputted store, then adds it
+      function create_item(){
+        //add($('#enter_store').val());
+        var text = $('#enter_item').val();
+        if(!text.length==0){
+          $('#enter_item').val('');
+          $('#enter_item').trigger('blur');
+          add(text);
+        }
+        else{
+          Materialize.toast("Not a valid item",500);
+        }
+      }
+
+      //adds a store with the given name
+      function add(text){
+        $('#item_list').append('<li><span>'+ text +' </span>' +
+          '<button id="delete'+counter+'" class="btn-flat s1 right">Delete</button>' +
+          '<button id="edit' + counter +'" class="btn-flat s1 right">Edit</button>' +
+          '</br></br></li><div class="divider"></div></br>');
+
+        $('#edit' + counter).click(function(){
+          $(this).prev().prev().attr('contenteditable','true');
+          $(this).prev().prev().focus();
+          //SAVE CHANGES TO DATABASE HERE
+        });
+
+        $('#delete' + counter).click(function(){
+          for(var i=2;i>0;i--){
+            $(this).next().next().remove();
+            $(this).parent().next().remove();
+          }
+          $(this).parent().remove();
+        });
+        counter++;
+        //REMOVE FROM DATABASE HERE
+      };
+
+      function save(){
+        Materialize.toast("Store data saved",500);
+      };
+    </script>
+  </body>
+</html>
