@@ -9,6 +9,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.model.*;
+import com.amazonaws.regions.Regions;
 
 /**
  * Creates AWS DynamoDB table to maintain items in a hierarchy. Overall JSON representation
@@ -93,6 +94,9 @@ public class TableHandler {
         dynamoDBClient = AmazonDynamoDBClientBuilder.standard().withEndpointConfiguration(
                 new AwsClientBuilder.EndpointConfiguration("http://localhost:8000", "us-west-2"))
                 .build();
+        /*dynamoDBClient = AmazonDynamoDBClientBuilder.standard()
+                .withRegion(Regions.US_WEST_2)
+                .build();*/
     }
 
     private DynamoDB getDynamoDB() {

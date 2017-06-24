@@ -59,12 +59,12 @@ public class TableHandlerTest {
             Assert.assertNotNull("Added item should not be null", addedItem);
             System.out.println("Item added: " + addedItem.toJSONPretty());
         } finally {
-            try {
+            /*try {
                 th.deleteItem(DEFAULT_DEVICE_ID, ROOT_PARENT_ITEM_ID);
             } catch (Exception ee) {
                 System.out.println("Cleanup of added item failed. " + ee.getMessage());
                 ee.printStackTrace();
-            }
+            }*/
             th.releaseResources();
         }
     }
