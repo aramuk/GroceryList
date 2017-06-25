@@ -19,7 +19,7 @@ public class GroceryItem {
     public String toJSON(){
         Item item = new Item()
                 .withPrimaryKey(TableHandler.ATTR_DEVICE_ID, deviceID, TableHandler.ATTR_PARENT_ID, parentItemID)
-                .withList(TableHandler.ATTR_ITEM_INFO, itemValues);
+                .withList(TableHandler.ATTR_ITEM_INFO, (List<?>) null /* itemValues*/);
         return item.toJSON();
     }
 
@@ -28,7 +28,8 @@ public class GroceryItem {
         String d = item.getString(TableHandler.ATTR_DEVICE_ID);
         String p = item.getString(TableHandler.ATTR_PARENT_ID);
         List<Map<String, String>> l = item.getList(TableHandler.ATTR_ITEM_INFO);
-        return new GroceryItem(d, p, l);
+        // return new GroceryItem(d, p, l);
+        return null;
     }
 
 }
