@@ -3,6 +3,7 @@ package org.aramuk.glist;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -20,25 +21,25 @@ import com.amazonaws.regions.Regions;
  *             "device_id": "12345678", // Uniquely identifies one instance of the application
  *             "parent_item_id": "0", // Top level items are always stored with zero id
  *             "item_info": [
- *                 {"item_id": "123", "value": "Trader Joe's"},
- *                 {"item_id": "345", "value": "Costco"},
- *                 {"item_id": "567", "value": "Whole Foods"}
+ *                 {"item_id": "123", "name": "Trader Joe's"},
+ *                 {"item_id": "345", "name": "Costco"},
+ *                 {"item_id": "567", "name": "Whole Foods"}
  *             ]
  *          },
  *          {
  *              "device_id": "12345678",
  *              "parent_item_id": "123",
  *              "item_info": [
- *                  {"item_id": "901", "value": "Balsamic Vinegar"},
- *                  {"item_id": "902", "value": "Waffles"}
+ *                  {"item_id": "901", "name": "Balsamic Vinegar"},
+ *                  {"item_id": "902", "name": "Waffles"}
  *              ]
  *          },
  *          {
  *              "device_id": "87654321",
  *              "parent_item_id": "0",
  *              "item_info": [
- *                  {"item_id": "ABC", "value": "Rock Climbing"},
- *                  {"item_id": "DEF", "value": "Skiing"}
+ *                  {"item_id": "ABC", "name": "Rock Climbing"},
+ *                  {"item_id": "DEF", "name": "Skiing"}
  *              ]
  *          }
  *      ]
@@ -51,7 +52,7 @@ public class TableHandler {
     static final String ATTR_PARENT_ID = "parent_item_id";
     static final String ATTR_ITEM_INFO = "item_info";
     static final String ATTR_ITEM_ID = "item_id";
-    static final String ATTR_ITEM_VALUE = "value";
+    static final String ATTR_ITEM_NAME = "name";
 
     private AmazonDynamoDB dynamoDBClient;
     private String tableName;
@@ -181,9 +182,17 @@ public class TableHandler {
      * Adds a new item to dynamo DB table if deviceId, parentId is not present
      * @param deviceId identifier of the device
      * @param parentId identifier of the parent item, zero for top level item
-     * @param values List containing Map of entries
+     * @param values List containing Map of entries to be added. Every item in the list (every map) must contain
+     *               an entry with key ATTR_ITEM_ID.
      */
-    public void addItem(String deviceId, String parentId, List values) {
+    public void addItem(String deviceId, String parentId, List<Map<String, String>> values) {
+        // Ensure that item_id is present in every list item
+        for (Map kvPairs : values) {
+            if (kvPairs.get(ATTR_ITEM_ID) == null) {
+                throw new IllegalArgumentException("Required attribute " + ATTR_ITEM_ID +
+                        " is missing in the specified list of values");
+            }
+        }
         // ToDo: Add code to not replace existing entries
         Table table = getTable();
         Item item = new Item()

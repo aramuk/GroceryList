@@ -2,22 +2,58 @@ package org.aramuk.glist;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
 
-import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+@XmlRootElement
 public class GroceryStore {
 
-    private String name;
-    private String storeID;
-    private Map<String, GroceryItem> groceryItems;
+    private String storeId;
+    private String storeName;
 
     private GroceryStore() {
     }
 
-    public GroceryStore(String name, String sid) {
-        this.name = name;
-        storeID = sid;
+    public GroceryStore(String sid, String name) {
+        setStoreId(sid);
+        this.setStoreName(name);
+    }
+
+    public static GroceryStore[] findAll(String deviceId) {
+        TableHandler th = new TableHandler();
+        try {
+            Item item = th.getItem(deviceId, "0");
+            if (item == null) {
+                return null;
+            }
+            List rawStores = item.getList(TableHandler.ATTR_ITEM_INFO);
+            if (rawStores == null) {
+                return null;
+            }
+            int numStores = rawStores.size();
+            if (numStores == 0) {
+                return null;
+            }
+            GroceryStore[] stores = new GroceryStore[numStores];
+            for (int i = 0; i < numStores; i++) {
+                Object obj = rawStores.get(i);
+                if (!(obj instanceof Map)) {
+                    System.err.println("Unexpected data type, expecting Map got " + obj != null ? obj.getClass() : "null");
+                    throw new RuntimeException("Internal Error!");
+                }
+                stores[i] = GroceryStore.createFromMap((Map) obj);
+            }
+            return stores;
+        } finally {
+            th.releaseResources();
+        }
+    }
+
+    public static GroceryStore createFromMap(Map map) {
+        return new GroceryStore((String)map.get(TableHandler.ATTR_ITEM_ID),
+                (String)map.get(TableHandler.ATTR_ITEM_NAME));
     }
 
     public static GroceryStore findByName(String deviceId, String storeName) {
@@ -31,13 +67,37 @@ public class GroceryStore {
         Item item = th.getItem(deviceId, "0");
     }
 
-    private void save(String deviceID){
-        TableHandler th = new TableHandler();
-        List info = new ArrayList();
-        for(String key:groceryItems.keySet()){
-            GroceryItem item = groceryItems.get(key);
-            info.add(item.toJSON());
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
-        th.addItem(deviceID, storeID, info);
+        if (!(o instanceof GroceryStore)) {
+            return false;
+        }
+        GroceryStore that = (GroceryStore)o;
+        return Objects.equals(getStoreId(), that.getStoreId()) &&
+                Objects.equals(getStoreName(), that.getStoreName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getStoreId(), getStoreName());
+    }
+
+    public String getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
     }
 }

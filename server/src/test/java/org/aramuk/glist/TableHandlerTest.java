@@ -42,15 +42,15 @@ public class TableHandlerTest {
         List<Map<String, String>> values = new ArrayList<>();
         HashMap<String, String> dataMap = new HashMap<>();
         dataMap.put(TableHandler.ATTR_ITEM_ID, "123");
-        dataMap.put(TableHandler.ATTR_ITEM_VALUE, "Trader Joe's");
+        dataMap.put(TableHandler.ATTR_ITEM_NAME, "Trader Joe's");
         values.add(dataMap);
         dataMap = new HashMap<>();
         dataMap.put(TableHandler.ATTR_ITEM_ID, "345");
-        dataMap.put(TableHandler.ATTR_ITEM_VALUE, "Costco");
+        dataMap.put(TableHandler.ATTR_ITEM_NAME, "Costco");
         values.add(dataMap);
         dataMap = new HashMap<>();
         dataMap.put(TableHandler.ATTR_ITEM_ID, "567");
-        dataMap.put(TableHandler.ATTR_ITEM_VALUE, "Whole Foods");
+        dataMap.put(TableHandler.ATTR_ITEM_NAME, "Whole Foods");
         values.add(dataMap);
         TableHandler th = new TableHandler();
         try {
@@ -65,6 +65,34 @@ public class TableHandlerTest {
                 System.out.println("Cleanup of added item failed. " + ee.getMessage());
                 ee.printStackTrace();
             }
+            th.releaseResources();
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddItemNoItemIdKey() {
+        System.out.println("Testing add item without specifying item id key ...");
+        List<Map<String, String>> values = new ArrayList<>();
+        HashMap<String, String> dataMap = new HashMap<>();
+        dataMap.put(TableHandler.ATTR_ITEM_ID, "123");
+        dataMap.put(TableHandler.ATTR_ITEM_NAME, "Trader Joe's");
+        values.add(dataMap);
+        dataMap = new HashMap<>();
+        /*
+        // Code copied from addItemNormal. Removed item_id from one of the entries
+        dataMap.put(TableHandler.ATTR_ITEM_ID, "345");
+         */
+        dataMap.put(TableHandler.ATTR_ITEM_NAME, "Costco");
+        values.add(dataMap);
+        dataMap = new HashMap<>();
+        dataMap.put(TableHandler.ATTR_ITEM_ID, "567");
+        dataMap.put(TableHandler.ATTR_ITEM_NAME, "Whole Foods");
+        values.add(dataMap);
+        TableHandler th = new TableHandler();
+        try {
+            th.addItem(DEFAULT_DEVICE_ID, ROOT_PARENT_ITEM_ID, values);
+            System.err.println("Adding an item without key value, worked, this is an error.");
+        } finally {
             th.releaseResources();
         }
     }
